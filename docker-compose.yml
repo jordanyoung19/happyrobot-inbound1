@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  api:
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./data:/data:ro
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+    restart: unless-stopped
+
+  # Future services can be added here, for example:
+  # metrics:
+  #   build:
+  #     context: ./metrics
+  #     dockerfile: Dockerfile
+  #   ports:
+  #     - "3001:3001"
+  #   volumes:
+  #     - ./data:/data:ro
+  #   environment:
+  #     - NODE_ENV=production
+  #     - PORT=3001
+  #   restart: unless-stopped
+
+volumes:
+  data:
+

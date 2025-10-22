@@ -1,0 +1,33 @@
+# Dependencies
+node_modules
+npm-debug.log
+
+# Development files
+*.md
+.env
+.env.local
+
+# Git
+.git
+.gitignore
+
+# Build outputs
+dist
+build
+
+# IDE
+.vscode
+.idea
+
+# Logs
+*.log
+
+# OS
+.DS_Store
+
+# Ngrok config (not needed in container)
+ngrok.config.json
+
+# Development script
+src/start-with-ngrok.ts
+
