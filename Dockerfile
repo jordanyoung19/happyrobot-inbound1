@@ -2,8 +2,8 @@ FROM node:20-alpine
 
 WORKDIR /app
 
-# Copy API package files
-COPY api/package*.json ./api/
+# Copy API package files (including package-lock.json)
+COPY api/package.json api/package-lock.json ./api/
 
 # Install API dependencies
 WORKDIR /app/api
