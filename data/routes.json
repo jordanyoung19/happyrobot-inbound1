@@ -1,0 +1,113 @@
+[
+  {
+    "route_id": "RT-001",
+    "origin": "Los Angeles, CA",
+    "destination": "Phoenix, AZ",
+    "distance_miles": 373,
+    "average_duration_hours": 6.5,
+    "average_rate": 1250,
+    "frequency": "daily",
+    "popular_equipment": ["Dry Van", "Refrigerated"],
+    "total_loads_ytd": 145
+  },
+  {
+    "route_id": "RT-002",
+    "origin": "Chicago, IL",
+    "destination": "Dallas, TX",
+    "distance_miles": 967,
+    "average_duration_hours": 15.5,
+    "average_rate": 2100,
+    "frequency": "daily",
+    "popular_equipment": ["Flatbed", "Dry Van"],
+    "total_loads_ytd": 203
+  },
+  {
+    "route_id": "RT-003",
+    "origin": "Miami, FL",
+    "destination": "Atlanta, GA",
+    "distance_miles": 663,
+    "average_duration_hours": 11.0,
+    "average_rate": 1800,
+    "frequency": "daily",
+    "popular_equipment": ["Refrigerated"],
+    "total_loads_ytd": 178
+  },
+  {
+    "route_id": "RT-004",
+    "origin": "Seattle, WA",
+    "destination": "Portland, OR",
+    "distance_miles": 173,
+    "average_duration_hours": 3.5,
+    "average_rate": 650,
+    "frequency": "daily",
+    "popular_equipment": ["Dry Van"],
+    "total_loads_ytd": 312
+  },
+  {
+    "route_id": "RT-005",
+    "origin": "New York, NY",
+    "destination": "Boston, MA",
+    "distance_miles": 215,
+    "average_duration_hours": 4.5,
+    "average_rate": 850,
+    "frequency": "daily",
+    "popular_equipment": ["Dry Van", "Box Truck"],
+    "total_loads_ytd": 267
+  },
+  {
+    "route_id": "RT-006",
+    "origin": "Houston, TX",
+    "destination": "New Orleans, LA",
+    "distance_miles": 348,
+    "average_duration_hours": 6.0,
+    "average_rate": 1100,
+    "frequency": "weekly",
+    "popular_equipment": ["Flatbed", "Dry Van"],
+    "total_loads_ytd": 89
+  },
+  {
+    "route_id": "RT-007",
+    "origin": "Denver, CO",
+    "destination": "Salt Lake City, UT",
+    "distance_miles": 525,
+    "average_duration_hours": 8.5,
+    "average_rate": 1450,
+    "frequency": "weekly",
+    "popular_equipment": ["Dry Van"],
+    "total_loads_ytd": 95
+  },
+  {
+    "route_id": "RT-008",
+    "origin": "San Francisco, CA",
+    "destination": "Las Vegas, NV",
+    "distance_miles": 569,
+    "average_duration_hours": 9.0,
+    "average_rate": 1550,
+    "frequency": "daily",
+    "popular_equipment": ["Dry Van", "Refrigerated"],
+    "total_loads_ytd": 156
+  },
+  {
+    "route_id": "RT-009",
+    "origin": "Detroit, MI",
+    "destination": "Cleveland, OH",
+    "distance_miles": 169,
+    "average_duration_hours": 3.0,
+    "average_rate": 600,
+    "frequency": "daily",
+    "popular_equipment": ["Dry Van"],
+    "total_loads_ytd": 234
+  },
+  {
+    "route_id": "RT-010",
+    "origin": "Phoenix, AZ",
+    "destination": "Albuquerque, NM",
+    "distance_miles": 465,
+    "average_duration_hours": 7.5,
+    "average_rate": 1300,
+    "frequency": "weekly",
+    "popular_equipment": ["Dry Van", "Flatbed"],
+    "total_loads_ytd": 78
+  }
+]
+

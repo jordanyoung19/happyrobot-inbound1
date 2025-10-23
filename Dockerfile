@@ -2,7 +2,21 @@ FROM node:20-alpine
 
 WORKDIR /app
 
+# Copy metrics package files and source
+COPY metrics/package*.json ./metrics/
+COPY metrics/tsconfig.json ./metrics/
+COPY metrics/tsconfig.node.json ./metrics/
+COPY metrics/vite.config.ts ./metrics/
+COPY metrics/index.html ./metrics/
+COPY metrics/src/ ./metrics/src/
+
+# Install metrics dependencies and build
+WORKDIR /app/metrics
+RUN npm install
+RUN npm run build
+
 # Copy API package files
+WORKDIR /app
 COPY api/package*.json ./api/
 
 # Install API dependencies

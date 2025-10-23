@@ -1,0 +1,135 @@
+[
+  {
+    "driver_id": "DRV-001",
+    "name": "John Martinez",
+    "status": "active",
+    "current_load": "LD-2025-001",
+    "location": "Phoenix, AZ",
+    "hours_available": 8.5,
+    "phone": "+1-555-0101",
+    "license_class": "CDL-A",
+    "years_experience": 12
+  },
+  {
+    "driver_id": "DRV-002",
+    "name": "Sarah Johnson",
+    "status": "active",
+    "current_load": "LD-2025-003",
+    "location": "Atlanta, GA",
+    "hours_available": 6.0,
+    "phone": "+1-555-0102",
+    "license_class": "CDL-A",
+    "years_experience": 8
+  },
+  {
+    "driver_id": "DRV-003",
+    "name": "Michael Chen",
+    "status": "active",
+    "current_load": "LD-2025-002",
+    "location": "Dallas, TX",
+    "hours_available": 10.0,
+    "phone": "+1-555-0103",
+    "license_class": "CDL-A",
+    "years_experience": 15
+  },
+  {
+    "driver_id": "DRV-004",
+    "name": "Emily Rodriguez",
+    "status": "off_duty",
+    "current_load": null,
+    "location": "Los Angeles, CA",
+    "hours_available": 11.0,
+    "phone": "+1-555-0104",
+    "license_class": "CDL-A",
+    "years_experience": 5
+  },
+  {
+    "driver_id": "DRV-005",
+    "name": "David Thompson",
+    "status": "active",
+    "current_load": "LD-2025-004",
+    "location": "Portland, OR",
+    "hours_available": 7.5,
+    "phone": "+1-555-0105",
+    "license_class": "CDL-A",
+    "years_experience": 10
+  },
+  {
+    "driver_id": "DRV-006",
+    "name": "Lisa Anderson",
+    "status": "active",
+    "current_load": "LD-2025-005",
+    "location": "Denver, CO",
+    "hours_available": 9.0,
+    "phone": "+1-555-0106",
+    "license_class": "CDL-A",
+    "years_experience": 7
+  },
+  {
+    "driver_id": "DRV-007",
+    "name": "Robert Williams",
+    "status": "off_duty",
+    "current_load": null,
+    "location": "Houston, TX",
+    "hours_available": 11.0,
+    "phone": "+1-555-0107",
+    "license_class": "CDL-B",
+    "years_experience": 3
+  },
+  {
+    "driver_id": "DRV-008",
+    "name": "Jennifer Brown",
+    "status": "active",
+    "current_load": "LD-2025-007",
+    "location": "Chicago, IL",
+    "hours_available": 5.5,
+    "phone": "+1-555-0108",
+    "license_class": "CDL-A",
+    "years_experience": 11
+  },
+  {
+    "driver_id": "DRV-009",
+    "name": "James Wilson",
+    "status": "active",
+    "current_load": "LD-2025-008",
+    "location": "Memphis, TN",
+    "hours_available": 8.0,
+    "phone": "+1-555-0109",
+    "license_class": "CDL-A",
+    "years_experience": 9
+  },
+  {
+    "driver_id": "DRV-010",
+    "name": "Maria Garcia",
+    "status": "off_duty",
+    "current_load": null,
+    "location": "Miami, FL",
+    "hours_available": 11.0,
+    "phone": "+1-555-0110",
+    "license_class": "CDL-A",
+    "years_experience": 6
+  },
+  {
+    "driver_id": "DRV-011",
+    "name": "Christopher Lee",
+    "status": "active",
+    "current_load": "LD-2025-010",
+    "location": "Seattle, WA",
+    "hours_available": 6.5,
+    "phone": "+1-555-0111",
+    "license_class": "CDL-A",
+    "years_experience": 13
+  },
+  {
+    "driver_id": "DRV-012",
+    "name": "Amanda Taylor",
+    "status": "active",
+    "current_load": "LD-2025-011",
+    "location": "Boston, MA",
+    "hours_available": 7.0,
+    "phone": "+1-555-0112",
+    "license_class": "CDL-A",
+    "years_experience": 4
+  }
+]
+

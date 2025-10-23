@@ -7,6 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "tsx watch src/index.ts",
     "dev:ngrok": "tsx src/start-with-ngrok.ts",
+    "build": "cd ../metrics && npm install && npm run build",
     "start": "tsx src/index.ts"
   },
   "keywords": [],

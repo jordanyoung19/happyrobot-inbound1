@@ -1,31 +1,15 @@
-# Dependencies
-**/node_modules
-**/npm-debug.log
-**/package-lock.json
-
-# Git
+node_modules
+npm-debug.log
 .git
 .gitignore
-
-# Environment
-**/.env
-**/.env.local
-
-# IDE
+README.md
+DEPLOYMENT.md
+.env
+.DS_Store
+*/node_modules
+api/node_modules
+metrics/node_modules
+metrics/dist
 .vscode
 .idea
-*.swp
-*.swo
-*~
-
-# OS
-.DS_Store
-Thumbs.db
-
-# Build outputs
-**/dist
-**/build
-
-# Logs
-**/*.log
-
+*.log
