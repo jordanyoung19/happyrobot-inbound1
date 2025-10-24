@@ -44,15 +44,26 @@ interface Deal {
   call_outcome?: string;
 }
 
+interface Call {
+  id: number;
+  sentiment: string;
+  dba: string;
+  datetime: string;
+  outcome: string;
+  created_at: string;
+}
+
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884D8', '#82ca9d'];
 
 function App() {
   const [metrics, setMetrics] = useState<Metrics | null>(null);
   const [deals, setDeals] = useState<Deal[]>([]);
+  const [calls, setCalls] = useState<Call[]>([]);
   const [lastUpdated, setLastUpdated] = useState<Date>(new Date());
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [dealsError, setDealsError] = useState<string | null>(null);
+  const [callsError, setCallsError] = useState<string | null>(null);
 
   const fetchMetrics = useCallback(async () => {
     setIsLoading(true);
@@ -88,14 +99,31 @@ function App() {
     }
   }, []);
 
+  const fetchCalls = useCallback(async () => {
+    setCallsError(null);
+    try {
+      const res = await fetch('/api/calls');
+      if (!res.ok) {
+        throw new Error(`HTTP error! status: ${res.status}`);
+      }
+      const data = await res.json();
+      setCalls(data);
+    } catch (err) {
+      console.error('Failed to fetch calls:', err);
+      setCallsError('Failed to load calls from database.');
+    }
+  }, []);
+
   useEffect(() => {
     fetchMetrics();
     fetchDeals();
+    fetchCalls();
 
     // Poll every 10 seconds
     const interval = setInterval(() => {
       fetchMetrics();
       fetchDeals();
+      fetchCalls();
     }, 10000);
 
     // Refresh when tab becomes visible
@@ -103,6 +131,7 @@ function App() {
       if (!document.hidden) {
         fetchMetrics();
         fetchDeals();
+        fetchCalls();
       }
     };
     document.addEventListener('visibilitychange', handleVisibilityChange);
@@ -111,7 +140,7 @@ function App() {
       clearInterval(interval);
       document.removeEventListener('visibilitychange', handleVisibilityChange);
     };
-  }, [fetchMetrics, fetchDeals]);
+  }, [fetchMetrics, fetchDeals, fetchCalls]);
 
   if (!metrics && isLoading) {
     return (
@@ -314,6 +343,69 @@ function App() {
                         </span>
                       ) : '-'}
                     </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
+
+      <div className="table-card">
+        <h3>📞 Call Records from Database</h3>
+        {callsError && (
+          <div className="error-banner" style={{ marginBottom: '1rem' }}>
+            {callsError}
+          </div>
+        )}
+        {calls.length === 0 && !callsError ? (
+          <p style={{ textAlign: 'center', padding: '2rem', color: '#666' }}>
+            No calls in database yet. Use POST /api/calls to add call records.
+          </p>
+        ) : (
+          <div className="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>DBA</th>
+                  <th>Date & Time</th>
+                  <th>Sentiment</th>
+                  <th>Outcome</th>
+                  <th>Created At</th>
+                </tr>
+              </thead>
+              <tbody>
+                {calls.slice(0, 10).map((call) => (
+                  <tr key={call.id}>
+                    <td>{call.id}</td>
+                    <td>{call.dba}</td>
+                    <td>{new Date(call.datetime).toLocaleString()}</td>
+                    <td>
+                      <span style={{ 
+                        padding: '0.25rem 0.5rem', 
+                        borderRadius: '4px',
+                        backgroundColor: call.sentiment === 'positive' ? '#d4edda' : 
+                                       call.sentiment === 'negative' ? '#f8d7da' : '#fff3cd',
+                        color: call.sentiment === 'positive' ? '#155724' : 
+                               call.sentiment === 'negative' ? '#721c24' : '#856404'
+                      }}>
+                        {call.sentiment}
+                      </span>
+                    </td>
+                    <td>
+                      <span style={{ 
+                        padding: '0.25rem 0.5rem', 
+                        borderRadius: '4px',
+                        backgroundColor: call.outcome === 'deal' ? '#d4edda' : 
+                                       call.outcome === 'no_deal' ? '#f8d7da' : '#e7f3ff',
+                        color: call.outcome === 'deal' ? '#155724' : 
+                               call.outcome === 'no_deal' ? '#721c24' : '#004085'
+                      }}>
+                        {call.outcome}
+                      </span>
+                    </td>
+                    <td>{new Date(call.created_at).toLocaleString()}</td>
                   </tr>
                 ))}
               </tbody>
