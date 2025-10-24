@@ -114,21 +114,61 @@ app.get("/api/metrics", (_req, res) => {
 // Create a new call
 app.post("/api/calls", (req, res) => {
   try {
-    const { sentiment, dba, datetime, outcome } = req.body;
+    const { sentiment, dba, datetime, outcome, load_id, start_location, end_location, initial_price, agreed_price } = req.body;
     
     if (!sentiment || !dba || !datetime || !outcome) {
       return res.status(400).json({ error: 'Missing required fields: sentiment, dba, datetime, outcome' });
     }
     
-    const stmt = db.prepare('INSERT INTO calls (sentiment, dba, datetime, outcome) VALUES (?, ?, ?, ?)');
-    const result = stmt.run(sentiment, dba, datetime, outcome);
+    // Insert the call record
+    const callStmt = db.prepare('INSERT INTO calls (sentiment, dba, datetime, outcome) VALUES (?, ?, ?, ?)');
+    const callResult = callStmt.run(sentiment, dba, datetime, outcome);
+    const callId = callResult.lastInsertRowid;
     
-    res.status(201).json({ 
-      id: result.lastInsertRowid,
+    const callData = {
+      id: callId,
       sentiment,
       dba,
       datetime,
       outcome
+    };
+    
+    // If outcome is "yes", create a deal record
+    if (outcome === "yes") {
+      // Validate deal fields are provided
+      if (!load_id || !start_location || !end_location) {
+        return res.status(400).json({ 
+          error: 'When outcome is "yes", deal fields are required: load_id, start_location, end_location',
+          call: callData
+        });
+      }
+      
+      // Insert the deal record with reference to the call
+      const dealStmt = db.prepare(
+        'INSERT INTO deals (load_id, start_location, end_location, call_id, initial_price, agreed_price) VALUES (?, ?, ?, ?, ?, ?)'
+      );
+      const dealResult = dealStmt.run(load_id, start_location, end_location, callId, initial_price || null, agreed_price || null);
+      
+      const dealData = {
+        id: dealResult.lastInsertRowid,
+        load_id,
+        start_location,
+        end_location,
+        call_id: callId,
+        initial_price: initial_price || null,
+        agreed_price: agreed_price || null
+      };
+      
+      // Return both call and deal data
+      return res.status(201).json({ 
+        call: callData,
+        deal: dealData
+      });
+    }
+    
+    // If outcome is not "yes", return only call data
+    res.status(201).json({ 
+      call: callData
     });
   } catch (error) {
     console.error('Error creating call:', error);

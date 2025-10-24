@@ -313,7 +313,7 @@ function App() {
                   <th>Initial Price</th>
                   <th>Agreed Price</th>
                   <th>DBA</th>
-                  <th>Sentiment</th>
+                  <th>Call ID</th>
                 </tr>
               </thead>
               <tbody>
@@ -329,20 +329,7 @@ function App() {
                       {deal.agreed_price ? `$${deal.agreed_price.toLocaleString()}` : '-'}
                     </td>
                     <td>{deal.call_dba || '-'}</td>
-                    <td>
-                      {deal.call_sentiment ? (
-                        <span style={{ 
-                          padding: '0.25rem 0.5rem', 
-                          borderRadius: '4px',
-                          backgroundColor: deal.call_sentiment === 'positive' ? '#d4edda' : 
-                                         deal.call_sentiment === 'negative' ? '#f8d7da' : '#fff3cd',
-                          color: deal.call_sentiment === 'positive' ? '#155724' : 
-                                 deal.call_sentiment === 'negative' ? '#721c24' : '#856404'
-                        }}>
-                          {deal.call_sentiment}
-                        </span>
-                      ) : '-'}
-                    </td>
+                    <td>{deal.call_id || '-'}</td>
                   </tr>
                 ))}
               </tbody>
