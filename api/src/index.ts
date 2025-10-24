@@ -2,12 +2,19 @@ import express from "express";
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
+import { getDatabase } from "../database/init.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
 const PORT = parseInt(process.env.PORT || '3000', 10);
+
+// Middleware to parse JSON bodies
+app.use(express.json());
+
+// Initialize database
+const db = getDatabase();
 
 // Serve static dashboard files at /dashboard
 const dashboardPath = path.join(__dirname, '../../metrics/dist');
@@ -97,6 +104,275 @@ app.get("/api/metrics", (_req, res) => {
   } catch (error) {
     console.error('Error calculating metrics:', error);
     res.status(500).json({ error: 'Failed to calculate metrics' });
+  }
+});
+
+// ============================================
+// CALLS CRUD ENDPOINTS
+// ============================================
+
+// Create a new call
+app.post("/api/calls", (req, res) => {
+  try {
+    const { sentiment, dba, datetime, outcome } = req.body;
+    
+    if (!sentiment || !dba || !datetime || !outcome) {
+      return res.status(400).json({ error: 'Missing required fields: sentiment, dba, datetime, outcome' });
+    }
+    
+    const stmt = db.prepare('INSERT INTO calls (sentiment, dba, datetime, outcome) VALUES (?, ?, ?, ?)');
+    const result = stmt.run(sentiment, dba, datetime, outcome);
+    
+    res.status(201).json({ 
+      id: result.lastInsertRowid,
+      sentiment,
+      dba,
+      datetime,
+      outcome
+    });
+  } catch (error) {
+    console.error('Error creating call:', error);
+    res.status(500).json({ error: 'Failed to create call' });
+  }
+});
+
+// Get all calls
+app.get("/api/calls", (req, res) => {
+  try {
+    const stmt = db.prepare('SELECT * FROM calls ORDER BY datetime DESC');
+    const calls = stmt.all();
+    res.json(calls);
+  } catch (error) {
+    console.error('Error fetching calls:', error);
+    res.status(500).json({ error: 'Failed to fetch calls' });
+  }
+});
+
+// Get single call by id
+app.get("/api/calls/:id", (req, res) => {
+  try {
+    const { id } = req.params;
+    const stmt = db.prepare('SELECT * FROM calls WHERE id = ?');
+    const call = stmt.get(id);
+    
+    if (!call) {
+      return res.status(404).json({ error: 'Call not found' });
+    }
+    
+    res.json(call);
+  } catch (error) {
+    console.error('Error fetching call:', error);
+    res.status(500).json({ error: 'Failed to fetch call' });
+  }
+});
+
+// Update a call
+app.put("/api/calls/:id", (req, res) => {
+  try {
+    const { id } = req.params;
+    const { sentiment, dba, datetime, outcome } = req.body;
+    
+    // Check if call exists
+    const checkStmt = db.prepare('SELECT id FROM calls WHERE id = ?');
+    const exists = checkStmt.get(id);
+    
+    if (!exists) {
+      return res.status(404).json({ error: 'Call not found' });
+    }
+    
+    const stmt = db.prepare('UPDATE calls SET sentiment = ?, dba = ?, datetime = ?, outcome = ? WHERE id = ?');
+    stmt.run(sentiment, dba, datetime, outcome, id);
+    
+    res.json({ 
+      id: parseInt(id),
+      sentiment,
+      dba,
+      datetime,
+      outcome
+    });
+  } catch (error) {
+    console.error('Error updating call:', error);
+    res.status(500).json({ error: 'Failed to update call' });
+  }
+});
+
+// Delete a call
+app.delete("/api/calls/:id", (req, res) => {
+  try {
+    const { id } = req.params;
+    
+    // Check if call exists
+    const checkStmt = db.prepare('SELECT id FROM calls WHERE id = ?');
+    const exists = checkStmt.get(id);
+    
+    if (!exists) {
+      return res.status(404).json({ error: 'Call not found' });
+    }
+    
+    const stmt = db.prepare('DELETE FROM calls WHERE id = ?');
+    stmt.run(id);
+    
+    res.json({ message: 'Call deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting call:', error);
+    res.status(500).json({ error: 'Failed to delete call' });
+  }
+});
+
+// ============================================
+// DEALS CRUD ENDPOINTS
+// ============================================
+
+// Create a new deal
+app.post("/api/deals", (req, res) => {
+  try {
+    const { load_id, start_location, end_location, call_id, initial_price, agreed_price } = req.body;
+    
+    if (!load_id || !start_location || !end_location) {
+      return res.status(400).json({ error: 'Missing required fields: load_id, start_location, end_location' });
+    }
+    
+    // Verify call_id exists if provided
+    if (call_id) {
+      const checkStmt = db.prepare('SELECT id FROM calls WHERE id = ?');
+      const callExists = checkStmt.get(call_id);
+      if (!callExists) {
+        return res.status(400).json({ error: 'Referenced call_id does not exist' });
+      }
+    }
+    
+    const stmt = db.prepare(
+      'INSERT INTO deals (load_id, start_location, end_location, call_id, initial_price, agreed_price) VALUES (?, ?, ?, ?, ?, ?)'
+    );
+    const result = stmt.run(load_id, start_location, end_location, call_id || null, initial_price || null, agreed_price || null);
+    
+    res.status(201).json({ 
+      id: result.lastInsertRowid,
+      load_id,
+      start_location,
+      end_location,
+      call_id: call_id || null,
+      initial_price: initial_price || null,
+      agreed_price: agreed_price || null
+    });
+  } catch (error) {
+    console.error('Error creating deal:', error);
+    res.status(500).json({ error: 'Failed to create deal' });
+  }
+});
+
+// Get all deals (with optional JOIN to calls)
+app.get("/api/deals", (req, res) => {
+  try {
+    const stmt = db.prepare(`
+      SELECT 
+        deals.*,
+        calls.sentiment as call_sentiment,
+        calls.dba as call_dba,
+        calls.outcome as call_outcome
+      FROM deals
+      LEFT JOIN calls ON deals.call_id = calls.id
+      ORDER BY deals.created_at DESC
+    `);
+    const deals = stmt.all();
+    res.json(deals);
+  } catch (error) {
+    console.error('Error fetching deals:', error);
+    res.status(500).json({ error: 'Failed to fetch deals' });
+  }
+});
+
+// Get single deal by id
+app.get("/api/deals/:id", (req, res) => {
+  try {
+    const { id } = req.params;
+    const stmt = db.prepare(`
+      SELECT 
+        deals.*,
+        calls.sentiment as call_sentiment,
+        calls.dba as call_dba,
+        calls.datetime as call_datetime,
+        calls.outcome as call_outcome
+      FROM deals
+      LEFT JOIN calls ON deals.call_id = calls.id
+      WHERE deals.id = ?
+    `);
+    const deal = stmt.get(id);
+    
+    if (!deal) {
+      return res.status(404).json({ error: 'Deal not found' });
+    }
+    
+    res.json(deal);
+  } catch (error) {
+    console.error('Error fetching deal:', error);
+    res.status(500).json({ error: 'Failed to fetch deal' });
+  }
+});
+
+// Update a deal
+app.put("/api/deals/:id", (req, res) => {
+  try {
+    const { id } = req.params;
+    const { load_id, start_location, end_location, call_id, initial_price, agreed_price } = req.body;
+    
+    // Check if deal exists
+    const checkStmt = db.prepare('SELECT id FROM deals WHERE id = ?');
+    const exists = checkStmt.get(id);
+    
+    if (!exists) {
+      return res.status(404).json({ error: 'Deal not found' });
+    }
+    
+    // Verify call_id exists if provided
+    if (call_id) {
+      const checkCallStmt = db.prepare('SELECT id FROM calls WHERE id = ?');
+      const callExists = checkCallStmt.get(call_id);
+      if (!callExists) {
+        return res.status(400).json({ error: 'Referenced call_id does not exist' });
+      }
+    }
+    
+    const stmt = db.prepare(
+      'UPDATE deals SET load_id = ?, start_location = ?, end_location = ?, call_id = ?, initial_price = ?, agreed_price = ? WHERE id = ?'
+    );
+    stmt.run(load_id, start_location, end_location, call_id || null, initial_price || null, agreed_price || null, id);
+    
+    res.json({ 
+      id: parseInt(id),
+      load_id,
+      start_location,
+      end_location,
+      call_id: call_id || null,
+      initial_price: initial_price || null,
+      agreed_price: agreed_price || null
+    });
+  } catch (error) {
+    console.error('Error updating deal:', error);
+    res.status(500).json({ error: 'Failed to update deal' });
+  }
+});
+
+// Delete a deal
+app.delete("/api/deals/:id", (req, res) => {
+  try {
+    const { id } = req.params;
+    
+    // Check if deal exists
+    const checkStmt = db.prepare('SELECT id FROM deals WHERE id = ?');
+    const exists = checkStmt.get(id);
+    
+    if (!exists) {
+      return res.status(404).json({ error: 'Deal not found' });
+    }
+    
+    const stmt = db.prepare('DELETE FROM deals WHERE id = ?');
+    stmt.run(id);
+    
+    res.json({ message: 'Deal deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting deal:', error);
+    res.status(500).json({ error: 'Failed to delete deal' });
   }
 });
 

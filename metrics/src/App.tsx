@@ -30,13 +30,29 @@ interface Metrics {
   timestamp: string;
 }
 
+interface Deal {
+  id: number;
+  load_id: string;
+  start_location: string;
+  end_location: string;
+  call_id: number | null;
+  initial_price: number | null;
+  agreed_price: number | null;
+  created_at: string;
+  call_sentiment?: string;
+  call_dba?: string;
+  call_outcome?: string;
+}
+
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884D8', '#82ca9d'];
 
 function App() {
   const [metrics, setMetrics] = useState<Metrics | null>(null);
+  const [deals, setDeals] = useState<Deal[]>([]);
   const [lastUpdated, setLastUpdated] = useState<Date>(new Date());
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [dealsError, setDealsError] = useState<string | null>(null);
 
   const fetchMetrics = useCallback(async () => {
     setIsLoading(true);
@@ -57,16 +73,36 @@ function App() {
     }
   }, []);
 
+  const fetchDeals = useCallback(async () => {
+    setDealsError(null);
+    try {
+      const res = await fetch('/api/deals');
+      if (!res.ok) {
+        throw new Error(`HTTP error! status: ${res.status}`);
+      }
+      const data = await res.json();
+      setDeals(data);
+    } catch (err) {
+      console.error('Failed to fetch deals:', err);
+      setDealsError('Failed to load deals from database.');
+    }
+  }, []);
+
   useEffect(() => {
     fetchMetrics();
+    fetchDeals();
 
     // Poll every 10 seconds
-    const interval = setInterval(fetchMetrics, 10000);
+    const interval = setInterval(() => {
+      fetchMetrics();
+      fetchDeals();
+    }, 10000);
 
     // Refresh when tab becomes visible
     const handleVisibilityChange = () => {
       if (!document.hidden) {
         fetchMetrics();
+        fetchDeals();
       }
     };
     document.addEventListener('visibilitychange', handleVisibilityChange);
@@ -75,7 +111,7 @@ function App() {
       clearInterval(interval);
       document.removeEventListener('visibilitychange', handleVisibilityChange);
     };
-  }, [fetchMetrics]);
+  }, [fetchMetrics, fetchDeals]);
 
   if (!metrics && isLoading) {
     return (
@@ -224,6 +260,66 @@ function App() {
             </tbody>
           </table>
         </div>
+      </div>
+
+      <div className="table-card">
+        <h3>📊 Recent Deals from Database</h3>
+        {dealsError && (
+          <div className="error-banner" style={{ marginBottom: '1rem' }}>
+            {dealsError}
+          </div>
+        )}
+        {deals.length === 0 && !dealsError ? (
+          <p style={{ textAlign: 'center', padding: '2rem', color: '#666' }}>
+            No deals in database yet. Use POST /api/deals to add deals.
+          </p>
+        ) : (
+          <div className="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Load ID</th>
+                  <th>Route</th>
+                  <th>Initial Price</th>
+                  <th>Agreed Price</th>
+                  <th>DBA</th>
+                  <th>Sentiment</th>
+                </tr>
+              </thead>
+              <tbody>
+                {deals.slice(0, 10).map((deal) => (
+                  <tr key={deal.id}>
+                    <td>{deal.id}</td>
+                    <td className="load-id">{deal.load_id}</td>
+                    <td className="route">{deal.start_location} → {deal.end_location}</td>
+                    <td className="rate">
+                      {deal.initial_price ? `$${deal.initial_price.toLocaleString()}` : '-'}
+                    </td>
+                    <td className="rate">
+                      {deal.agreed_price ? `$${deal.agreed_price.toLocaleString()}` : '-'}
+                    </td>
+                    <td>{deal.call_dba || '-'}</td>
+                    <td>
+                      {deal.call_sentiment ? (
+                        <span style={{ 
+                          padding: '0.25rem 0.5rem', 
+                          borderRadius: '4px',
+                          backgroundColor: deal.call_sentiment === 'positive' ? '#d4edda' : 
+                                         deal.call_sentiment === 'negative' ? '#f8d7da' : '#fff3cd',
+                          color: deal.call_sentiment === 'positive' ? '#155724' : 
+                                 deal.call_sentiment === 'negative' ? '#721c24' : '#856404'
+                        }}>
+                          {deal.call_sentiment}
+                        </span>
+                      ) : '-'}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
       </div>
     </div>
   );

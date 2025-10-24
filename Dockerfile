@@ -27,8 +27,14 @@ RUN npm install --production
 COPY api/src/ ./src/
 COPY api/tsconfig.json ./
 
+# Copy database directory structure
+COPY api/database/ ./database/
+
 # Copy data directory
 COPY data/ /data/
+
+# Create database directory for SQLite file
+RUN mkdir -p /database
 
 # Expose port
 EXPOSE 3000

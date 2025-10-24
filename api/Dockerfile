@@ -13,6 +13,12 @@ RUN npm ci --only=production
 COPY src/ ./src/
 COPY tsconfig.json ./
 
+# Copy database directory (schema and init files)
+COPY database/ ./database/
+
+# Create database directory for SQLite file storage
+RUN mkdir -p /database
+
 # Expose the port the app runs on
 EXPOSE 3000
 

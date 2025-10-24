@@ -3,12 +3,13 @@ version: '3.8'
 services:
   api:
     build:
-      context: ./api
+      context: .
       dockerfile: Dockerfile
     ports:
       - "3000:3000"
     volumes:
       - ./data:/data:ro
+      - db_data:/database
     environment:
       - NODE_ENV=production
       - PORT=3000
@@ -30,4 +31,5 @@ services:
 
 volumes:
   data:
+  db_data:
 
