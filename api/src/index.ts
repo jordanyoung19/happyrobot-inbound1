@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import express from "express";
 import fs from "fs";
 import path from "path";
@@ -15,6 +16,37 @@ app.use(express.json());
 
 // Initialize database
 const db = getDatabase();
+
+// ============================================
+// API KEY AUTHENTICATION MIDDLEWARE
+// ============================================
+function requireApiKey(req: express.Request, res: express.Response, next: express.NextFunction) {
+  // Skip auth for public paths
+  if (req.path === '/' || 
+      req.path.startsWith('/dashboard') ||
+      req.path === '/api/metrics') {
+    return next();
+  }
+
+  // Allow public GET access to deals and calls (read-only for dashboard)
+  if ((req.path === '/api/deals' || req.path === '/api/calls' || 
+       req.path.startsWith('/api/deals/') || req.path.startsWith('/api/calls/')) && 
+      req.method === 'GET') {
+    return next();
+  }
+
+  const apiKey = req.headers['x-api-key'];
+  const validKey = process.env.API_KEY || 'dev-key-12345';
+  
+  if (apiKey !== validKey) {
+    return res.status(401).json({ error: 'Unauthorized: Invalid or missing API key' });
+  }
+  
+  next();
+}
+
+// Apply to all routes
+app.use(requireApiKey);
 
 // Serve static dashboard files at /dashboard
 const dashboardPath = path.join(__dirname, '../../metrics/dist');
