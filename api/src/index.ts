@@ -28,8 +28,8 @@ function requireApiKey(req: express.Request, res: express.Response, next: expres
     return next();
   }
 
-  // Allow public GET access to deals and calls (read-only for dashboard)
-  if ((req.path === '/api/deals' || req.path === '/api/calls' || 
+  // Allow public GET access to deals, calls, and data (read-only for dashboard)
+  if ((req.path === '/api/deals' || req.path === '/api/calls' || req.path === '/api/data' ||
        req.path.startsWith('/api/deals/') || req.path.startsWith('/api/calls/')) && 
       req.method === 'GET') {
     return next();
@@ -93,6 +93,8 @@ app.get("/api/metrics", (_req, res) => {
     const totalRevenue = loads.reduce((sum: number, load: any) => sum + load.loadboard_rate, 0);
     const averageRate = totalRevenue / totalLoads;
     const averageWeight = loads.reduce((sum: number, load: any) => sum + load.weight, 0) / totalLoads;
+    const totalMiles = loads.reduce((sum: number, load: any) => sum + load.miles, 0);
+    const averageMiles = totalMiles / totalLoads;
     
     // Equipment breakdown
     const equipmentBreakdown = loads.reduce((acc: Record<string, number>, load: any) => {
@@ -124,6 +126,8 @@ app.get("/api/metrics", (_req, res) => {
       totalRevenue,
       averageRate,
       averageWeight,
+      totalMiles,
+      averageMiles,
       equipmentBreakdown,
       commodityBreakdown,
       topRoutes,

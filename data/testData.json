@@ -9,7 +9,10 @@
     "loadboard_rate": 1250.00,
     "notes": "Temperature controlled not required. Standard loading dock available.",
     "weight": 42000,
-    "commodity_type": "Electronics"
+    "commodity_type": "Electronics",
+    "num_of_pieces": 18,
+    "miles": 373,
+    "dimensions": "48x40x48 inches"
   },
   {
     "load_id": "LD-2025-002",
@@ -21,7 +24,10 @@
     "loadboard_rate": 2100.00,
     "notes": "Requires tarps and chains. Load must be secured properly.",
     "weight": 38000,
-    "commodity_type": "Steel Beams"
+    "commodity_type": "Steel Beams",
+    "num_of_pieces": 12,
+    "miles": 967,
+    "dimensions": "96x48x24 inches"
   },
   {
     "load_id": "LD-2025-003",
@@ -33,7 +39,10 @@
     "loadboard_rate": 1800.00,
     "notes": "Maintain 34-38°F throughout transport. No stops permitted.",
     "weight": 44000,
-    "commodity_type": "Perishable Foods"
+    "commodity_type": "Perishable Foods",
+    "num_of_pieces": 22,
+    "miles": 662,
+    "dimensions": "48x40x60 inches"
   },
   {
     "load_id": "LD-2025-004",
@@ -45,7 +54,10 @@
     "loadboard_rate": 650.00,
     "notes": "Short haul. Easy load/unload. Forklift available.",
     "weight": 28000,
-    "commodity_type": "Furniture"
+    "commodity_type": "Furniture",
+    "num_of_pieces": 14,
+    "miles": 174,
+    "dimensions": "48x40x72 inches"
   },
   {
     "load_id": "LD-2025-005",
@@ -57,7 +69,10 @@
     "loadboard_rate": 1950.00,
     "notes": "Hazmat endorsement required. Full safety equipment needed.",
     "weight": 50000,
-    "commodity_type": "Chemicals"
+    "commodity_type": "Chemicals",
+    "num_of_pieces": 1,
+    "miles": 348,
+    "dimensions": "Tanker 9000 gallons"
   },
   {
     "load_id": "LD-2025-006",
@@ -69,7 +84,10 @@
     "loadboard_rate": 1400.00,
     "notes": "Mountain driving. Check weather conditions before departure.",
     "weight": 35000,
-    "commodity_type": "Retail Goods"
+    "commodity_type": "Retail Goods",
+    "num_of_pieces": 16,
+    "miles": 525,
+    "dimensions": "48x40x54 inches"
   },
   {
     "load_id": "LD-2025-007",
@@ -81,7 +99,10 @@
     "loadboard_rate": 550.00,
     "notes": "Expedited delivery. Multiple drop-off points in Boston area.",
     "weight": 5000,
-    "commodity_type": "Medical Supplies"
+    "commodity_type": "Medical Supplies",
+    "num_of_pieces": 25,
+    "miles": 215,
+    "dimensions": "24x18x18 inches"
   },
   {
     "load_id": "LD-2025-008",
@@ -93,7 +114,10 @@
     "loadboard_rate": 1100.00,
     "notes": "Oversized load. Permits already obtained. Escort not required.",
     "weight": 42000,
-    "commodity_type": "Machinery"
+    "commodity_type": "Machinery",
+    "num_of_pieces": 3,
+    "miles": 290,
+    "dimensions": "120x60x48 inches"
   },
   {
     "load_id": "LD-2025-009",
@@ -105,7 +129,10 @@
     "loadboard_rate": 1650.00,
     "notes": "Keep at 40°F. High value cargo - security protocols apply.",
     "weight": 32000,
-    "commodity_type": "Pharmaceuticals"
+    "commodity_type": "Pharmaceuticals",
+    "num_of_pieces": 20,
+    "miles": 569,
+    "dimensions": "48x40x42 inches"
   },
   {
     "load_id": "LD-2025-010",
@@ -117,7 +144,10 @@
     "loadboard_rate": 500.00,
     "notes": "Appointment required at destination. Call ahead 2 hours.",
     "weight": 25000,
-    "commodity_type": "Paper Products"
+    "commodity_type": "Paper Products",
+    "num_of_pieces": 12,
+    "miles": 140,
+    "dimensions": "48x40x48 inches"
   },
   {
     "load_id": "LD-2025-011",
@@ -129,7 +159,10 @@
     "loadboard_rate": 950.00,
     "notes": "Fragile items. Drive carefully. No-rush delivery.",
     "weight": 18000,
-    "commodity_type": "Glassware"
+    "commodity_type": "Glassware",
+    "num_of_pieces": 10,
+    "miles": 283,
+    "dimensions": "48x40x36 inches"
   },
   {
     "load_id": "LD-2025-012",
@@ -141,7 +174,10 @@
     "loadboard_rate": 750.00,
     "notes": "Construction materials. Driver must assist with unloading.",
     "weight": 40000,
-    "commodity_type": "Building Materials"
+    "commodity_type": "Building Materials",
+    "num_of_pieces": 8,
+    "miles": 185,
+    "dimensions": "96x48x36 inches"
   },
   {
     "load_id": "LD-2025-013",
@@ -153,7 +189,10 @@
     "loadboard_rate": 1550.00,
     "notes": "Frozen goods. Maintain -10°F. Generator backup recommended.",
     "weight": 41000,
-    "commodity_type": "Frozen Foods"
+    "commodity_type": "Frozen Foods",
+    "num_of_pieces": 21,
+    "miles": 405,
+    "dimensions": "48x40x60 inches"
   },
   {
     "load_id": "LD-2025-014",
@@ -165,7 +204,10 @@
     "loadboard_rate": 600.00,
     "notes": "Regional haul. Easy access at both locations.",
     "weight": 30000,
-    "commodity_type": "Textiles"
+    "commodity_type": "Textiles",
+    "num_of_pieces": 15,
+    "miles": 337,
+    "dimensions": "48x40x50 inches"
   },
   {
     "load_id": "LD-2025-015",
@@ -177,7 +219,10 @@
     "loadboard_rate": 1300.00,
     "notes": "Cross-docking required. Warehouse open 24/7.",
     "weight": 36000,
-    "commodity_type": "Auto Parts"
+    "commodity_type": "Auto Parts",
+    "num_of_pieces": 17,
+    "miles": 355,
+    "dimensions": "48x40x44 inches"
   },
   {
     "load_id": "LD-2025-016",
@@ -189,7 +234,10 @@
     "loadboard_rate": 850.00,
     "notes": "Overnight delivery preferred. Secure load with straps.",
     "weight": 34000,
-    "commodity_type": "Lumber"
+    "commodity_type": "Lumber",
+    "num_of_pieces": 6,
+    "miles": 175,
+    "dimensions": "144x48x24 inches"
   },
   {
     "load_id": "LD-2025-017",
@@ -201,7 +249,10 @@
     "loadboard_rate": 1200.00,
     "notes": "Seafood transport. Time-sensitive. Maintain 32°F.",
     "weight": 27000,
-    "commodity_type": "Seafood"
+    "commodity_type": "Seafood",
+    "num_of_pieces": 18,
+    "miles": 165,
+    "dimensions": "48x40x36 inches"
   },
   {
     "load_id": "LD-2025-018",
@@ -213,7 +264,10 @@
     "loadboard_rate": 1100.00,
     "notes": "Standard load. No special requirements.",
     "weight": 33000,
-    "commodity_type": "Consumer Goods"
+    "commodity_type": "Consumer Goods",
+    "num_of_pieces": 16,
+    "miles": 542,
+    "dimensions": "48x40x48 inches"
   },
   {
     "load_id": "LD-2025-019",
@@ -225,7 +279,10 @@
     "loadboard_rate": 700.00,
     "notes": "Industrial equipment. Forklift required for unloading.",
     "weight": 39000,
-    "commodity_type": "Industrial Equipment"
+    "commodity_type": "Industrial Equipment",
+    "num_of_pieces": 4,
+    "miles": 133,
+    "dimensions": "108x60x48 inches"
   },
   {
     "load_id": "LD-2025-020",
@@ -237,7 +294,10 @@
     "loadboard_rate": 800.00,
     "notes": "Agricultural products. Handle with care.",
     "weight": 31000,
-    "commodity_type": "Agricultural Products"
+    "commodity_type": "Agricultural Products",
+    "num_of_pieces": 13,
+    "miles": 420,
+    "dimensions": "48x40x52 inches"
   }
 ]
 

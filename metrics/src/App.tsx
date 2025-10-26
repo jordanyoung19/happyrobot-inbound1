@@ -18,6 +18,8 @@ interface Metrics {
   totalRevenue: number;
   averageRate: number;
   averageWeight: number;
+  totalMiles: number;
+  averageMiles: number;
   equipmentBreakdown: Record<string, number>;
   commodityBreakdown: Record<string, number>;
   topRoutes: Array<{
@@ -53,17 +55,36 @@ interface Call {
   created_at: string;
 }
 
+interface Load {
+  load_id: string;
+  origin: string;
+  destination: string;
+  pickup_datetime: string;
+  delivery_datetime: string;
+  equipment_type: string;
+  loadboard_rate: number;
+  notes: string;
+  weight: number;
+  commodity_type: string;
+  num_of_pieces: number;
+  miles: number;
+  dimensions: string;
+}
+
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884D8', '#82ca9d'];
 
 function App() {
   const [metrics, setMetrics] = useState<Metrics | null>(null);
   const [deals, setDeals] = useState<Deal[]>([]);
   const [calls, setCalls] = useState<Call[]>([]);
+  const [loads, setLoads] = useState<Load[]>([]);
+  const [showAllLoads, setShowAllLoads] = useState(false);
   const [lastUpdated, setLastUpdated] = useState<Date>(new Date());
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [dealsError, setDealsError] = useState<string | null>(null);
   const [callsError, setCallsError] = useState<string | null>(null);
+  const [loadsError, setLoadsError] = useState<string | null>(null);
 
   const fetchMetrics = useCallback(async () => {
     setIsLoading(true);
@@ -114,16 +135,33 @@ function App() {
     }
   }, []);
 
+  const fetchLoads = useCallback(async () => {
+    setLoadsError(null);
+    try {
+      const res = await fetch('/api/data');
+      if (!res.ok) {
+        throw new Error(`HTTP error! status: ${res.status}`);
+      }
+      const data = await res.json();
+      setLoads(data);
+    } catch (err) {
+      console.error('Failed to fetch loads:', err);
+      setLoadsError('Failed to load loads data.');
+    }
+  }, []);
+
   useEffect(() => {
     fetchMetrics();
     fetchDeals();
     fetchCalls();
+    fetchLoads();
 
     // Poll every 10 seconds
     const interval = setInterval(() => {
       fetchMetrics();
       fetchDeals();
       fetchCalls();
+      fetchLoads();
     }, 10000);
 
     // Refresh when tab becomes visible
@@ -132,6 +170,7 @@ function App() {
         fetchMetrics();
         fetchDeals();
         fetchCalls();
+        fetchLoads();
       }
     };
     document.addEventListener('visibilitychange', handleVisibilityChange);
@@ -140,7 +179,7 @@ function App() {
       clearInterval(interval);
       document.removeEventListener('visibilitychange', handleVisibilityChange);
     };
-  }, [fetchMetrics, fetchDeals, fetchCalls]);
+  }, [fetchMetrics, fetchDeals, fetchCalls, fetchLoads]);
 
   if (!metrics && isLoading) {
     return (
@@ -220,6 +259,16 @@ function App() {
           <p className="metric-value">{metrics.averageWeight.toLocaleString(undefined, { maximumFractionDigits: 0 })} lbs</p>
           <span className="metric-label">Per shipment</span>
         </div>
+        <div className="metric-card">
+          <h3>Total Miles</h3>
+          <p className="metric-value">{metrics.totalMiles.toLocaleString()}</p>
+          <span className="metric-label">All active loads</span>
+        </div>
+        <div className="metric-card">
+          <h3>Average Miles</h3>
+          <p className="metric-value">{metrics.averageMiles.toLocaleString(undefined, { maximumFractionDigits: 0 })}</p>
+          <span className="metric-label">Per load</span>
+        </div>
         {metrics.totalDrivers && (
           <div className="metric-card">
             <h3>Active Drivers</h3>
@@ -292,6 +341,81 @@ function App() {
       </div>
 
       <div className="table-card">
+        <h3>📦 Load Details</h3>
+        {loadsError && (
+          <div className="error-banner" style={{ marginBottom: '1rem' }}>
+            {loadsError}
+          </div>
+        )}
+        {loads.length === 0 && !loadsError ? (
+          <p style={{ textAlign: 'center', padding: '2rem', color: '#666' }}>
+            No loads available.
+          </p>
+        ) : (
+          <>
+            <div className="table-container">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Load ID</th>
+                    <th>Route</th>
+                    <th>Equipment</th>
+                    <th>Commodity</th>
+                    <th>Weight (lbs)</th>
+                    <th>Pieces</th>
+                    <th>Miles</th>
+                    <th>Dimensions</th>
+                    <th>Rate</th>
+                    <th>Pickup</th>
+                    <th>Delivery</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {loads.slice(0, showAllLoads ? loads.length : 5).map((load) => (
+                    <tr key={load.load_id}>
+                      <td className="load-id">{load.load_id}</td>
+                      <td className="route">{load.origin} → {load.destination}</td>
+                      <td>{load.equipment_type}</td>
+                      <td>{load.commodity_type}</td>
+                      <td>{load.weight.toLocaleString()}</td>
+                      <td>{load.num_of_pieces}</td>
+                      <td>{load.miles}</td>
+                      <td style={{ fontSize: '0.85em' }}>{load.dimensions}</td>
+                      <td className="rate">${load.loadboard_rate.toLocaleString()}</td>
+                      <td>{new Date(load.pickup_datetime).toLocaleDateString()}</td>
+                      <td>{new Date(load.delivery_datetime).toLocaleDateString()}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            {loads.length > 5 && (
+              <div style={{ textAlign: 'center', marginTop: '1rem' }}>
+                <button 
+                  onClick={() => setShowAllLoads(!showAllLoads)}
+                  style={{
+                    padding: '0.5rem 1.5rem',
+                    fontSize: '0.95rem',
+                    backgroundColor: '#0088FE',
+                    color: 'white',
+                    border: 'none',
+                    borderRadius: '6px',
+                    cursor: 'pointer',
+                    fontWeight: '500',
+                    transition: 'background-color 0.2s'
+                  }}
+                  onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#0066CC'}
+                  onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#0088FE'}
+                >
+                  {showAllLoads ? `Show Less (${loads.length - 5} hidden)` : `Show More (${loads.length - 5} more loads)`}
+                </button>
+              </div>
+            )}
+          </>
+        )}
+      </div>
+
+      <div className="table-card">
         <h3>📊 Recent Deals from Database</h3>
         {dealsError && (
           <div className="error-banner" style={{ marginBottom: '1rem' }}>
@@ -358,7 +482,7 @@ function App() {
                   <th>DBA</th>
                   <th>Date & Time</th>
                   <th>Sentiment</th>
-                  <th>Outcome</th>
+                  <th>Deal Settled</th>
                   <th>Created At</th>
                 </tr>
               </thead>
