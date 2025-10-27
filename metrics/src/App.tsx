@@ -1,15 +1,9 @@
 import { useEffect, useState, useCallback } from 'react';
 import {
-  BarChart,
-  Bar,
   PieChart,
   Pie,
   Cell,
-  XAxis,
-  YAxis,
-  CartesianGrid,
   Tooltip,
-  Legend,
   ResponsiveContainer,
 } from 'recharts';
 
@@ -206,11 +200,6 @@ function App() {
     value,
   }));
 
-  const commodityData = Object.entries(metrics.commodityBreakdown).map(([name, value]) => ({
-    name,
-    value,
-  }));
-
   return (
     <div className="dashboard">
       <header className="dashboard-header">
@@ -259,23 +248,6 @@ function App() {
           <p className="metric-value">{metrics.averageWeight.toLocaleString(undefined, { maximumFractionDigits: 0 })} lbs</p>
           <span className="metric-label">Per shipment</span>
         </div>
-        <div className="metric-card">
-          <h3>Total Miles</h3>
-          <p className="metric-value">{metrics.totalMiles.toLocaleString()}</p>
-          <span className="metric-label">All active loads</span>
-        </div>
-        <div className="metric-card">
-          <h3>Average Miles</h3>
-          <p className="metric-value">{metrics.averageMiles.toLocaleString(undefined, { maximumFractionDigits: 0 })}</p>
-          <span className="metric-label">Per load</span>
-        </div>
-        {metrics.totalDrivers && (
-          <div className="metric-card">
-            <h3>Active Drivers</h3>
-            <p className="metric-value">{metrics.activeDrivers} / {metrics.totalDrivers}</p>
-            <span className="metric-label">Currently on duty</span>
-          </div>
-        )}
       </div>
 
       <div className="charts-grid">
@@ -298,20 +270,6 @@ function App() {
               </Pie>
               <Tooltip />
             </PieChart>
-          </ResponsiveContainer>
-        </div>
-
-        <div className="chart-card">
-          <h3>Commodity Types</h3>
-          <ResponsiveContainer width="100%" height={300}>
-            <BarChart data={commodityData}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="name" angle={-45} textAnchor="end" height={100} />
-              <YAxis />
-              <Tooltip />
-              <Legend />
-              <Bar dataKey="value" fill="#0088FE" name="Loads" />
-            </BarChart>
           </ResponsiveContainer>
         </div>
       </div>
@@ -483,7 +441,6 @@ function App() {
                   <th>Date & Time</th>
                   <th>Sentiment</th>
                   <th>Deal Settled</th>
-                  <th>Created At</th>
                 </tr>
               </thead>
               <tbody>
@@ -516,7 +473,6 @@ function App() {
                         {call.outcome}
                       </span>
                     </td>
-                    <td>{new Date(call.created_at).toLocaleString()}</td>
                   </tr>
                 ))}
               </tbody>
