@@ -156,7 +156,7 @@
     "pickup_datetime": "2025-10-22T12:00:00Z",
     "delivery_datetime": "2025-10-23T10:00:00Z",
     "equipment_type": "Dry Van",
-    "loadboard_rate": 950.00,
+    "loadboard_rate": 1000.00,
     "notes": "Fragile items. Drive carefully. No-rush delivery.",
     "weight": 18000,
     "commodity_type": "Glassware",
