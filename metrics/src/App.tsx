@@ -67,6 +67,10 @@ interface Load {
 
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884D8', '#82ca9d'];
 
+type DealSortField = 'id' | 'load_id' | 'dba' | 'initial_price' | 'agreed_price';
+type CallSortField = 'id' | 'dba' | 'datetime' | 'sentiment' | 'outcome';
+type SortDirection = 'asc' | 'desc';
+
 function App() {
   const [metrics, setMetrics] = useState<Metrics | null>(null);
   const [deals, setDeals] = useState<Deal[]>([]);
@@ -79,6 +83,14 @@ function App() {
   const [dealsError, setDealsError] = useState<string | null>(null);
   const [callsError, setCallsError] = useState<string | null>(null);
   const [loadsError, setLoadsError] = useState<string | null>(null);
+  
+  // Sorting state for Deals
+  const [dealsSortField, setDealsSortField] = useState<DealSortField>('id');
+  const [dealsSortDirection, setDealsSortDirection] = useState<SortDirection>('desc');
+  
+  // Sorting state for Calls
+  const [callsSortField, setCallsSortField] = useState<CallSortField>('id');
+  const [callsSortDirection, setCallsSortDirection] = useState<SortDirection>('desc');
 
   const fetchMetrics = useCallback(async () => {
     setIsLoading(true);
@@ -143,6 +155,96 @@ function App() {
       setLoadsError('Failed to load loads data.');
     }
   }, []);
+
+  // Handle sorting for Deals table
+  const handleDealsSort = (field: DealSortField) => {
+    if (dealsSortField === field) {
+      // Toggle direction if clicking the same field
+      setDealsSortDirection(dealsSortDirection === 'asc' ? 'desc' : 'asc');
+    } else {
+      // Set new field with descending as default
+      setDealsSortField(field);
+      setDealsSortDirection('desc');
+    }
+  };
+
+  // Handle sorting for Calls table
+  const handleCallsSort = (field: CallSortField) => {
+    if (callsSortField === field) {
+      // Toggle direction if clicking the same field
+      setCallsSortDirection(callsSortDirection === 'asc' ? 'desc' : 'asc');
+    } else {
+      // Set new field with descending as default
+      setCallsSortField(field);
+      setCallsSortDirection('desc');
+    }
+  };
+
+  // Sort deals based on current sort field and direction
+  const sortedDeals = [...deals].sort((a, b) => {
+    let aValue: any;
+    let bValue: any;
+
+    switch (dealsSortField) {
+      case 'id':
+        aValue = a.id;
+        bValue = b.id;
+        break;
+      case 'load_id':
+        aValue = a.load_id;
+        bValue = b.load_id;
+        break;
+      case 'dba':
+        aValue = a.call_dba || '';
+        bValue = b.call_dba || '';
+        break;
+      case 'initial_price':
+        aValue = a.initial_price ?? -Infinity;
+        bValue = b.initial_price ?? -Infinity;
+        break;
+      case 'agreed_price':
+        aValue = a.agreed_price ?? -Infinity;
+        bValue = b.agreed_price ?? -Infinity;
+        break;
+    }
+
+    if (aValue < bValue) return dealsSortDirection === 'asc' ? -1 : 1;
+    if (aValue > bValue) return dealsSortDirection === 'asc' ? 1 : -1;
+    return 0;
+  });
+
+  // Sort calls based on current sort field and direction
+  const sortedCalls = [...calls].sort((a, b) => {
+    let aValue: any;
+    let bValue: any;
+
+    switch (callsSortField) {
+      case 'id':
+        aValue = a.id;
+        bValue = b.id;
+        break;
+      case 'dba':
+        aValue = a.dba;
+        bValue = b.dba;
+        break;
+      case 'datetime':
+        aValue = new Date(a.datetime).getTime();
+        bValue = new Date(b.datetime).getTime();
+        break;
+      case 'sentiment':
+        aValue = a.sentiment;
+        bValue = b.sentiment;
+        break;
+      case 'outcome':
+        aValue = a.outcome;
+        bValue = b.outcome;
+        break;
+    }
+
+    if (aValue < bValue) return callsSortDirection === 'asc' ? -1 : 1;
+    if (aValue > bValue) return callsSortDirection === 'asc' ? 1 : -1;
+    return 0;
+  });
 
   useEffect(() => {
     fetchMetrics();
@@ -389,17 +491,42 @@ function App() {
             <table>
               <thead>
                 <tr>
-                  <th>ID</th>
-                  <th>Load ID</th>
+                  <th 
+                    onClick={() => handleDealsSort('id')}
+                    style={{ cursor: 'pointer', userSelect: 'none' }}
+                  >
+                    ID {dealsSortField === 'id' && (dealsSortDirection === 'asc' ? '↑' : '↓')}
+                  </th>
+                  <th 
+                    onClick={() => handleDealsSort('load_id')}
+                    style={{ cursor: 'pointer', userSelect: 'none' }}
+                  >
+                    Load ID {dealsSortField === 'load_id' && (dealsSortDirection === 'asc' ? '↑' : '↓')}
+                  </th>
                   <th>Route</th>
-                  <th>Initial Price</th>
-                  <th>Agreed Price</th>
-                  <th>DBA</th>
+                  <th 
+                    onClick={() => handleDealsSort('initial_price')}
+                    style={{ cursor: 'pointer', userSelect: 'none' }}
+                  >
+                    Initial Price {dealsSortField === 'initial_price' && (dealsSortDirection === 'asc' ? '↑' : '↓')}
+                  </th>
+                  <th 
+                    onClick={() => handleDealsSort('agreed_price')}
+                    style={{ cursor: 'pointer', userSelect: 'none' }}
+                  >
+                    Agreed Price {dealsSortField === 'agreed_price' && (dealsSortDirection === 'asc' ? '↑' : '↓')}
+                  </th>
+                  <th 
+                    onClick={() => handleDealsSort('dba')}
+                    style={{ cursor: 'pointer', userSelect: 'none' }}
+                  >
+                    DBA {dealsSortField === 'dba' && (dealsSortDirection === 'asc' ? '↑' : '↓')}
+                  </th>
                   <th>Call ID</th>
                 </tr>
               </thead>
               <tbody>
-                {deals.slice(0, 10).map((deal) => (
+                {sortedDeals.slice(0, 10).map((deal) => (
                   <tr key={deal.id}>
                     <td>{deal.id}</td>
                     <td className="load-id">{deal.load_id}</td>
@@ -436,15 +563,40 @@ function App() {
             <table>
               <thead>
                 <tr>
-                  <th>ID</th>
-                  <th>DBA</th>
-                  <th>Date & Time</th>
-                  <th>Sentiment</th>
-                  <th>Deal Settled</th>
+                  <th 
+                    onClick={() => handleCallsSort('id')}
+                    style={{ cursor: 'pointer', userSelect: 'none' }}
+                  >
+                    ID {callsSortField === 'id' && (callsSortDirection === 'asc' ? '↑' : '↓')}
+                  </th>
+                  <th 
+                    onClick={() => handleCallsSort('dba')}
+                    style={{ cursor: 'pointer', userSelect: 'none' }}
+                  >
+                    DBA {callsSortField === 'dba' && (callsSortDirection === 'asc' ? '↑' : '↓')}
+                  </th>
+                  <th 
+                    onClick={() => handleCallsSort('datetime')}
+                    style={{ cursor: 'pointer', userSelect: 'none' }}
+                  >
+                    Date & Time {callsSortField === 'datetime' && (callsSortDirection === 'asc' ? '↑' : '↓')}
+                  </th>
+                  <th 
+                    onClick={() => handleCallsSort('sentiment')}
+                    style={{ cursor: 'pointer', userSelect: 'none' }}
+                  >
+                    Sentiment {callsSortField === 'sentiment' && (callsSortDirection === 'asc' ? '↑' : '↓')}
+                  </th>
+                  <th 
+                    onClick={() => handleCallsSort('outcome')}
+                    style={{ cursor: 'pointer', userSelect: 'none' }}
+                  >
+                    Deal Settled {callsSortField === 'outcome' && (callsSortDirection === 'asc' ? '↑' : '↓')}
+                  </th>
                 </tr>
               </thead>
               <tbody>
-                {calls.slice(0, 10).map((call) => (
+                {sortedCalls.slice(0, 10).map((call) => (
                   <tr key={call.id}>
                     <td>{call.id}</td>
                     <td>{call.dba}</td>

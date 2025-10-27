@@ -226,6 +226,16 @@ th {
   font-weight: 600;
   color: #4a5568;
   border-bottom: 2px solid #e2e8f0;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+th[style*="cursor: pointer"]:hover {
+  background-color: #e2e8f0;
+  color: #2d3748;
+}
+
+th[style*="cursor: pointer"]:active {
+  background-color: #cbd5e0;
 }
 
 td {
