@@ -156,6 +156,7 @@ The application is configured for Railway deployment using the root `Dockerfile`
 - `datetime` - TEXT (ISO 8601 format)
 - `outcome` - TEXT (call outcome description)
 - `created_at` - TEXT (timestamp, auto-generated)
+- `call_outcome` - TEXT (classification of call) 
 
 ### Deals Table
 - `id` - INTEGER PRIMARY KEY (auto-increment)
