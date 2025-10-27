@@ -150,15 +150,15 @@ app.get("/api/metrics", (_req, res) => {
 // Create a new call
 app.post("/api/calls", (req, res) => {
   try {
-    const { sentiment, dba, datetime, outcome, load_id, start_location, end_location, initial_price, agreed_price } = req.body;
+    const { sentiment, dba, datetime, outcome, call_outcome, load_id, start_location, end_location, initial_price, agreed_price } = req.body;
     
     if (!sentiment || !dba || !datetime || !outcome) {
       return res.status(400).json({ error: 'Missing required fields: sentiment, dba, datetime, outcome' });
     }
     
     // Insert the call record
-    const callStmt = db.prepare('INSERT INTO calls (sentiment, dba, datetime, outcome) VALUES (?, ?, ?, ?)');
-    const callResult = callStmt.run(sentiment, dba, datetime, outcome);
+    const callStmt = db.prepare('INSERT INTO calls (sentiment, dba, datetime, outcome, call_outcome) VALUES (?, ?, ?, ?, ?)');
+    const callResult = callStmt.run(sentiment, dba, datetime, outcome, call_outcome || null);
     const callId = callResult.lastInsertRowid;
     
     const callData = {
@@ -166,7 +166,8 @@ app.post("/api/calls", (req, res) => {
       sentiment,
       dba,
       datetime,
-      outcome
+      outcome,
+      call_outcome: call_outcome || null
     };
     
     // If outcome is "yes", create a deal record
@@ -246,7 +247,7 @@ app.get("/api/calls/:id", (req, res) => {
 app.put("/api/calls/:id", (req, res) => {
   try {
     const { id } = req.params;
-    const { sentiment, dba, datetime, outcome } = req.body;
+    const { sentiment, dba, datetime, outcome, call_outcome } = req.body;
     
     // Check if call exists
     const checkStmt = db.prepare('SELECT id FROM calls WHERE id = ?');
@@ -256,15 +257,16 @@ app.put("/api/calls/:id", (req, res) => {
       return res.status(404).json({ error: 'Call not found' });
     }
     
-    const stmt = db.prepare('UPDATE calls SET sentiment = ?, dba = ?, datetime = ?, outcome = ? WHERE id = ?');
-    stmt.run(sentiment, dba, datetime, outcome, id);
+    const stmt = db.prepare('UPDATE calls SET sentiment = ?, dba = ?, datetime = ?, outcome = ?, call_outcome = ? WHERE id = ?');
+    stmt.run(sentiment, dba, datetime, outcome, call_outcome || null, id);
     
     res.json({ 
       id: parseInt(id),
       sentiment,
       dba,
       datetime,
-      outcome
+      outcome,
+      call_outcome: call_outcome || null
     });
   } catch (error) {
     console.error('Error updating call:', error);

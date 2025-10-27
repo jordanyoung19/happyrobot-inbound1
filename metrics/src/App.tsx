@@ -46,6 +46,7 @@ interface Call {
   dba: string;
   datetime: string;
   outcome: string;
+  call_outcome: string | null;
   created_at: string;
 }
 
@@ -593,6 +594,7 @@ function App() {
                   >
                     Deal Settled {callsSortField === 'outcome' && (callsSortDirection === 'asc' ? '↑' : '↓')}
                   </th>
+                  <th>Call Outcome</th>
                 </tr>
               </thead>
               <tbody>
@@ -625,6 +627,7 @@ function App() {
                         {call.outcome}
                       </span>
                     </td>
+                    <td>{call.call_outcome || '-'}</td>
                   </tr>
                 ))}
               </tbody>

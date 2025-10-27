@@ -126,7 +126,7 @@
     "pickup_datetime": "2025-10-23T14:00:00Z",
     "delivery_datetime": "2025-10-24T20:00:00Z",
     "equipment_type": "Refrigerated",
-    "loadboard_rate": 1650.00,
+    "loadboard_rate": 1500.00,
     "notes": "Keep at 40°F. High value cargo - security protocols apply.",
     "weight": 32000,
     "commodity_type": "Pharmaceuticals",
@@ -227,7 +227,6 @@
   {
     "load_id": "LD-2025-016",
     "origin": "Nashville, TN",
-    "destination": "Louisville, KY",
     "pickup_datetime": "2025-10-22T15:00:00Z",
     "delivery_datetime": "2025-10-23T06:00:00Z",
     "equipment_type": "Flatbed",

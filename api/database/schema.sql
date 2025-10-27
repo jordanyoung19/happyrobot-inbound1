@@ -8,6 +8,7 @@ CREATE TABLE IF NOT EXISTS calls (
     dba TEXT NOT NULL,
     datetime TEXT NOT NULL,
     outcome TEXT NOT NULL,
+    call_outcome TEXT,
     created_at TEXT DEFAULT CURRENT_TIMESTAMP
 );
 
