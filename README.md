@@ -92,9 +92,15 @@ curl -X POST http://localhost:3000/api/calls \
   -H "Content-Type: application/json" \
   -d '{
     "sentiment": "positive",
-    "dba": "ABC Trucking Co",
-    "datetime": "2025-10-24T10:30:00Z",
-    "outcome": "deal_closed"
+    "dba": "XYZ Logistics",
+    "datetime": "2025-10-27T15:00:00Z",
+    "outcome": "yes",
+    "call_outcome": "Agreed on price after negotiation, driver available tomorrow",
+    "load_id": "LOAD-001",
+    "start_location": "Los Angeles, CA",
+    "end_location": "Phoenix, AZ",
+    "initial_price": 1500,
+    "agreed_price": 1650
   }'
 ```
 
